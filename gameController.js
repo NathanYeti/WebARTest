@@ -217,6 +217,8 @@ AFRAME.registerComponent('controller', {
     increaseFishFood: function() {
         this.fishFoodCount++;
         document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
+        console.log(this.riverFish);
+        console.log(this.tankFish);
     },
     // returns the world position of the passed in object
     getWorldPos: function(el) {
@@ -235,7 +237,11 @@ AFRAME.registerComponent('controller', {
         for (var i = fishAmount; i >= 1; i--) {
             var fish = document.createElement('a-fish');
             fish.setAttribute('position', this.randomFishLocation(parentObject));
-            fish.setAttribute('fish', '');
+            if(array == this.riverFish) {
+                fish.setAttribute('fish', {isfromserver:true});
+            } else {
+                fish.setAttribute('fish', '');
+            }
             parentObject.appendChild(fish);
             array.push(fish);
             this.registerFish(fish, parentObject);
