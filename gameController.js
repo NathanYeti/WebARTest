@@ -161,11 +161,17 @@ AFRAME.registerComponent('controller', {
         tracker.appendChild(this.tank);
     },
     riverSetup: function() {
+        var tracker = document.createElement('a-entity');
+        tracker.setAttribute('imagetracking', {name:'river', src:'./TestImages/OverLook_1_Resize.png', physicalWidth:1.016});
+        this.scene.appendChild(tracker);
         this.river = document.createElement('a-river');
         this.river.setAttribute('river', '');
         this.scene.appendChild(this.river);
     },
     foodSetup: function() {
+        var tracker = document.createElement('a-entity');
+        tracker.setAttribute('imagetracking', {name:'food', src:'./TestImages/Painting_2_Fish_Food.png', physicalWidth:1.016});
+        this.scene.appendChild(tracker);
         this.food = document.createElement('a-food');
         this.food.setAttribute('food', '');
         this.scene.appendChild(this.food);
