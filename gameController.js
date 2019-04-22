@@ -166,7 +166,7 @@ AFRAME.registerComponent('controller', {
         this.scene.appendChild(tracker);
         this.river = document.createElement('a-river');
         this.river.setAttribute('river', '');
-        this.scene.appendChild(this.river);
+        tracker.appendChild(this.river);
     },
     foodSetup: function() {
         var tracker = document.createElement('a-entity');
@@ -174,7 +174,7 @@ AFRAME.registerComponent('controller', {
         this.scene.appendChild(tracker);
         this.food = document.createElement('a-food');
         this.food.setAttribute('food', '');
-        this.scene.appendChild(this.food);
+        tracker.appendChild(this.food);
     },
     registerFish: function(fishObj, parentObject) {
         //var chosenFishData = fish[Math.floor(Math.random() * Object.keys(fish).length) + 1];
