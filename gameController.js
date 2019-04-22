@@ -154,7 +154,7 @@ AFRAME.registerComponent('controller', {
     },
     tankSetup: function() {
         var tracker = document.createElement('a-entity');
-        tracker.setAttribute('imagetracking', 'name:tank, src:./TestImages/Sturgeon_Sign_2_Resize.png, physicalWidth:1.016');
+        tracker.setAttribute('imagetracking', {name:tank, src:./TestImages/Sturgeon_Sign_2_Resize.png, physicalWidth:1.016});
         this.scene.appendChild(tracker);
         this.tank = document.createElement('a-tank');
         this.tank.setAttribute('tank', '');

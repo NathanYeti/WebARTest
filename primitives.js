@@ -2,7 +2,7 @@ AFRAME.registerPrimitive('a-tank', {
     defaultComponents: {
         geometry: {primitive:'box', width:2, depth:1, height:.4},
         material: {color:'blue', opacity:.5},
-        position: {x:0, y:-1, z:-2},
+        position: {x:0, y:0, z:0}, // {x:0, y:-1, z:-2}
     },
     mappings: {
     },
