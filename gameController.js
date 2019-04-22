@@ -46,12 +46,11 @@ AFRAME.registerComponent('controller', {
         
         this.selectedFish = null;
         
-        this.riverFish = [];
+        this.serverFish = [];
         this.riverFishAmount;
-        this.tankFish = [];
+        this.nonServerFish = [];
         this.fishMaxAmount = 15;
         
-        // {fish: obj, fishData:{name, age, weight, length}}
         this.fishData = [];
         this.fishNameList = fishNameList;
         
@@ -97,6 +96,16 @@ AFRAME.registerComponent('controller', {
             var selFishData = selFish.components.fish.data;
             var releaseSpot = details.detail.spotSelected;
             this.selectedFish = null;
+            if(releaseSpot == this.river) {
+                if(this.nonServerFish.includes(selFish)) {
+                    var index = this.nonServerFish.findIndex((index)=> {
+                        return selFish == index;
+                    });
+                    this.nonServerFish.splice(index, 1);
+                    this.serverFish.push(selFish);
+                };
+                this.updateFishDataBase(selFish, selFishData);
+            };
             selFish.setAttribute('position', this.worldToLocal(selFish, releaseSpot));
             releaseSpot.appendChild(selFish);
             
@@ -139,7 +148,7 @@ AFRAME.registerComponent('controller', {
                 this.activeFishNames.splice(index, 1);
                 // this takes time to call, need to determine selected fish ahead of time, grab data, and then initialize fish. This should be done off of the emit('hasloaded')
                 chosenFishData.once('value', snap => {
-                    this.activeFishSelectedData.push(snap.val());
+                    this.activeFishSelectedData.push({fishServerName:snap.key, fishData:snap.val()});
                     fishLoaded--;
                     if (fishLoaded == 0) {
                         el.emit('dataloaded');
@@ -200,7 +209,7 @@ AFRAME.registerComponent('controller', {
 
         switch(parentObject) {
             case this.tank:
-                combinedFishData = {fish:fishObj, fishData:{BirthDay:Math.round((new Date()).getTime() / 1000), Name:this.determineName(), Size:.1, TimesFed:0}};
+                combinedFishData = {fish:fishObj, fishServerName:null, fishData:{BirthDay:Math.round((new Date()).getTime() / 1000), Name:this.determineName(), Size:.1, TimesFed:0}};
                 this.fishData.push(combinedFishData);
                 break;
             case this.river:
@@ -209,7 +218,7 @@ AFRAME.registerComponent('controller', {
                     return chosenFishData == index;
                 }));
                 this.activeFishSelectedData.splice(index,1);
-                var combinedFishData = {fish:fishObj, fishData:chosenFishData};
+                var combinedFishData = {fish:fishObj, fishServerName:chosenFishData.fishServerName, fishData:chosenFishData.fishData};
                 this.fishData.push(combinedFishData);
                 break;
         }
@@ -217,8 +226,8 @@ AFRAME.registerComponent('controller', {
     increaseFishFood: function() {
         this.fishFoodCount++;
         document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
-        console.log(this.riverFish);
-        console.log(this.tankFish);
+        console.log(this.serverFish);
+        console.log(this.nonServerFish);
     },
     // returns the world position of the passed in object
     getWorldPos: function(el) {
@@ -249,7 +258,7 @@ AFRAME.registerComponent('controller', {
         var data;
         for (var i = fishData.length - 1; i >= 0; i--) {
             if (fishData[i].fish == fish) {
-                data = fishData[i].fishData;
+                data = {fishServerName:fishData[i].fishServerName, fishData:fishData[i].fishData};
                 break;
             }
         }
@@ -292,10 +301,10 @@ AFRAME.registerComponent('controller', {
         return name.join(' ');
     },
     populateDataBase: function() {
-        updates = {};
+        var updates = {};
         for (var i = 10; i > 0; i--) {
             var name = 'Fish_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000);
-            console.log(name);
+            console.log(name + " added to server.");
             
             updates['Fish/' + name] = {
                 BirthDay:Math.round((new Date()).getTime() / 1000), 
@@ -306,6 +315,36 @@ AFRAME.registerComponent('controller', {
             updates['FishList/' + name] = name;
         };
         firebase.database().ref().update(updates);
+    },
+    updateFishDataBase: function(fishObj, fishData) {
+        var update = {};
+        var name;
+        if(fishData.servername != null) {
+            name = fishData.servername;
+        } else {
+            name = 'Fish_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000);
+        };
+        
+        for (i in this.fishData) {
+            if(this.fishData[i].fish == fishObj) {
+                this.fishData.splice(i, 1);
+                var combinedFishData = {fish:fishObj, fishServerName:name, fishData:fishObj.components.fish.fishServerData.fishData};
+                this.fishData.push(combinedFishData);
+                break;
+            } 
+        }
+        
+        console.log(name + " added to server.");
+        console.log(fishData);
+        
+        update['Fish/' + name] = {
+            BirthDay:fishData.birthday, 
+            Name:fishData.name, 
+            Size:fishData.size, 
+            TimesFed:fishData.timesfed
+        };
+        update['FishList/' + name] = name;
+        firebase.database().ref().update(update);
     },
 });
 

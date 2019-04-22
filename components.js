@@ -7,7 +7,7 @@ AFRAME.registerComponent('tank', {
         this.scene = el.sceneEl;
         this.sceneController = this.scene.components.controller;
         
-        this.sceneController.populateRiverTank(el, this.sceneController.tankFish, this.sceneController.fishMaxAmount);
+        this.sceneController.populateRiverTank(el, this.sceneController.nonServerFish, this.sceneController.fishMaxAmount);
     },
 });
 
@@ -20,7 +20,7 @@ AFRAME.registerComponent('river', {
         this.scene = el.sceneEl;
         this.sceneController = this.scene.components.controller;
 
-        this.sceneController.populateRiverTank(el, this.sceneController.riverFish, this.sceneController.riverFishAmount);
+        this.sceneController.populateRiverTank(el, this.sceneController.serverFish, this.sceneController.riverFishAmount);
     },
 });
 
@@ -49,9 +49,9 @@ AFRAME.registerComponent('fish', {
     schema: {
         birthday: {type: 'int'},
         name: {type: 'string'},
+        servername: {type: 'string'},
         size: {type: 'int'},
         timesfed: {type: 'int'},
-        isfromserver: {type: 'boolean', default: false},
         rtscale: {type: 'string', default:'1 1 1'},
         sscale: {type: 'string', default:'.1 .1 .1'},
     },
@@ -63,10 +63,9 @@ AFRAME.registerComponent('fish', {
         this.scene = el.sceneEl;
         this.sceneController = this.scene.components.controller;
         
-        this.fishData = this.sceneController.getFishData(el);
+        this.fishServerData = this.sceneController.getFishData(el);
         this.setupData();
         this.determineFromServer();
-        console.log(data.isfromserver);
         
         this.mdFN = ()=> {
             if(this.sceneController.selectedFish == null) {
@@ -82,17 +81,15 @@ AFRAME.registerComponent('fish', {
     determineFromServer() {
         var el = this.el;
         var data = this.data;
-        if(this.sceneController.riverFish.includes(el)) {
-            data.isfromserver = true;
-        }
     },
     setupData: function() {
         var data = this.data;
-
-        data.birthday = this.fishData.BirthDay;
-        data.name = this.fishData.Name;
-        data.size = this.fishData.Size;
-        data.timesfed = this.fishData.TimesFed;
+        
+        data.servername = this.fishServerData.fishServerName;
+        data.birthday = this.fishServerData.fishData.BirthDay;
+        data.name = this.fishServerData.fishData.Name;
+        data.size = this.fishServerData.fishData.Size;
+        data.timesfed = this.fishServerData.fishData.TimesFed;
     },
     remove: function() {
         this.el.removeEventListener('mousedown', this.mdFN);
