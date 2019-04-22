@@ -65,6 +65,7 @@ AFRAME.registerComponent('fish', {
         
         this.fishData = this.sceneController.getFishData(el);
         this.setupData();
+        this.determineFromServer();
         console.log(data.isfromserver);
         
         this.mdFN = ()=> {
@@ -77,6 +78,13 @@ AFRAME.registerComponent('fish', {
                 
         el.addEventListener('mousedown', this.mdFN);
         el.setAttribute('class', 'interactable');
+    },
+    determineFromServer() {
+        var el = this.el;
+        var data = this.data;
+        if(this.sceneController.riverFish.includes(el)) {
+            data.isfromserver = true;
+        }
     },
     setupData: function() {
         var data = this.data;

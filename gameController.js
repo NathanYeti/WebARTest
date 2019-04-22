@@ -237,11 +237,7 @@ AFRAME.registerComponent('controller', {
         for (var i = fishAmount; i >= 1; i--) {
             var fish = document.createElement('a-fish');
             fish.setAttribute('position', this.randomFishLocation(parentObject));
-            if(array == this.riverFish) {
-                fish.setAttribute('fish', {isfromserver:true});
-            } else {
-                fish.setAttribute('fish', '');
-            }
+            fish.setAttribute('fish', '');
             parentObject.appendChild(fish);
             array.push(fish);
             this.registerFish(fish, parentObject);
