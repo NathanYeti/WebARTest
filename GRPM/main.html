@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title> GRPM </title>
+        
+        <script src="https://www.gstatic.com/firebasejs/5.9.3/firebase.js"></script>
+        <script src="https://aframe.io/releases/0.8.0/aframe.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/three.ar.js@latest/dist/three.ar.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/chenzlabs/aframe-ar@master/dist/aframe-ar.js"></script>
+        <script src="https://unpkg.com/aframe-animation-component@5.1.2/dist/aframe-animation-component.min.js"></script>
+        
+        <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
+        <script src="d3-fetch.js"></script>
+        
+        <script src="database.js"></script>
+        <script src="tracking.js"></script>
+        <script src="primitives.js"></script>
+        <script src="components.js"></script>
+        <script src="anim.js"></script>
+        <script src="gameController.js"></script>
+        <link rel="stylesheet" href="main.css">
+    </head>
+    <body>
+        
+        <!-- element used for tracking fish food -->
+        <div id="ffh">
+            <h2 id="ff">FF: 0</h2>
+        </div>
+        <div id = 'fishdisplay'>
+            <div id='fishinfopanel'>
+                <h3 id='fname'>Name</h3>
+                <div id='fishinfo'>
+                    <h3 id='fbirth' class="fishdata">Birth Day:</h3>
+                    <h3 id='fsize' class="fishdata">Size:</h3>
+                    <h3 id='ffed' class="fishdata">Times Fed:</h3>
+                </div>
+            </div>
+            <div id='fishbuttons'>
+                <input class='button' type='button' onclick="riverRelease()" value="Release River">
+                <input class='button' type='button' onclick="tankRelease()" value="Release Tank">
+            </div>
+        </div>
+        
+        <!-- use raycaster="objects: object" to specify which objects to check for in raycasting with cursor -->
+        <a-scene controller ar='worldSensing: true' cursor='rayOrigin: mouse' raycaster='objects: .interactable'>
+            <a-camera id="camera">
+            </a-camera>
+            <!-- used for preloading data -->
+            <a-assets>
+                <img crossorigin="anonymous"
+                     src="./TestImages/Painting_2_Fish_Food.png">
+                <img crossorigin="anonymous"
+                     src="./TestImages/OverLook_1_Resize.png">
+                <img crossorigin="anonymous"
+                     src="./TestImages/Sturgeon_Sign_2_Resize.png">
+            </a-assets>
+        </a-scene>
+        
+        <script>
+            var gameScene = document.querySelector('a-scene');
+            
+            var riverRelease = function() {
+                var sceneCon = gameScene.components.controller;
+                gameScene.emit('releasefish',{fishSelected:sceneCon.selectedFish,spotSelected:sceneCon.river},true);
+            }
+            var tankRelease = function() {
+                var sceneCon = gameScene.components.controller;
+                gameScene.emit('releasefish',{fishSelected:sceneCon.selectedFish,spotSelected:sceneCon.tank},true);
+            }
+        </script>
+    </body>
+</html>
