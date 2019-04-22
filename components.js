@@ -51,11 +51,13 @@ AFRAME.registerComponent('fish', {
         name: {type: 'string'},
         size: {type: 'int'},
         timesfed: {type: 'int'},
+        isfromserver: {type: 'boolean', default: false},
         rtscale: {type: 'string', default:'1 1 1'},
         sscale: {type: 'string', default:'.1 .1 .1'},
     },
     init: function() {
         var el = this.el;
+        var data = this.data;
         
         // reference to the scene
         this.scene = el.sceneEl;
@@ -63,6 +65,7 @@ AFRAME.registerComponent('fish', {
         
         this.fishData = this.sceneController.getFishData(el);
         this.setupData();
+        console.log(data.isfromserver);
         
         this.mdFN = ()=> {
             if(this.sceneController.selectedFish == null) {

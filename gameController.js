@@ -11,6 +11,7 @@ AFRAME.registerComponent('controller', {
         var el = this.el;
         var data = this.data;
         
+        this.isEditorTesting = true;
         // reference to the scene
         this.scene = el.sceneEl;
         // reference to the camera
@@ -156,28 +157,45 @@ AFRAME.registerComponent('controller', {
         var tracker = document.createElement('a-entity');
         tracker.setAttribute('imagetracking', {name:'tank', src:'./TestImages/Sturgeon_Sign_2_Resize.png', physicalWidth:1.016});
         this.scene.appendChild(tracker);
+        this.trackers.push(tracker);
         this.tank = document.createElement('a-tank');
         this.tank.setAttribute('tank', '');
-        tracker.appendChild(this.tank);
+        if(this.isEditorTesting == true) {
+            this.tank.setAttribute('position', {x:0, y:-1, z:-2});
+            this.scene.appendChild(this.tank);
+        } else {
+            tracker.appendChild(this.tank);
+        }
     },
     riverSetup: function() {
         var tracker = document.createElement('a-entity');
         tracker.setAttribute('imagetracking', {name:'river', src:'./TestImages/OverLook_1_Resize.png', physicalWidth:0.9144});
         this.scene.appendChild(tracker);
+        this.trackers.push(tracker);
         this.river = document.createElement('a-river');
         this.river.setAttribute('river', '');
-        tracker.appendChild(this.river);
+        if(this.isEditorTesting == true) {
+            this.river.setAttribute('position', {x:-2, y:-1, z:0});
+            this.scene.appendChild(this.river);
+        } else {
+            tracker.appendChild(this.river);
+        }
     },
     foodSetup: function() {
         var tracker = document.createElement('a-entity');
         tracker.setAttribute('imagetracking', {name:'food', src:'./TestImages/Painting_2_Fish_Food.png', physicalWidth:1.6891});
         this.scene.appendChild(tracker);
+        this.trackers.push(tracker);
         this.food = document.createElement('a-food');
         this.food.setAttribute('food', '');
-        tracker.appendChild(this.food);
+        if(this.isEditorTesting == true) {
+            this.food.setAttribute('position', {x:2, y:-1, z:0});
+            this.scene.appendChild(this.food);
+        } else {
+            tracker.appendChild(this.food);
+        }
     },
     registerFish: function(fishObj, parentObject) {
-        //var chosenFishData = fish[Math.floor(Math.random() * Object.keys(fish).length) + 1];
         var combinedFishData;
 
         switch(parentObject) {
