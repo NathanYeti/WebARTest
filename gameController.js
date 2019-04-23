@@ -55,6 +55,27 @@ AFRAME.registerComponent('controller', {
         this.fishData = [];
         this.fishNameList = fishNameList;
         
+        this.feedFish = (details)=> {
+            var selFish = details.detail.fishSelected;
+            var selFishCom = selFish.components.fish;
+            var selFishData = selFish.components.fish.data;
+            // decrease fish food amount
+            this.decreaseFishFood();
+            // update fish data in array of data
+            var size = Math.round((selFishData.size + .1) * 1000)/1000;
+            var timesFed = selFishData.timesfed + 1;
+            var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.name, Size:size, TimesFed:timesFed};
+            this.updateFishDataInArray(selFish, selFishData.serverName, updatedFishData);
+            
+            // update local fish data
+            selFishCom.fishServerData = this.getFishData(selFish);
+            selFishCom.setupData();
+            // update UI fish data being showed
+            document.getElementById('fsize').innerHTML = "Size: " + selFishData.size + 'm';
+            document.getElementById('ffed').innerHTML = "Times Fed: " + selFishData.timesfed;
+            // update server
+            this.updateFishDataBase();
+        };
         this.gameSetup = (details)=> {
             this.tankSetup();
             this.riverSetup();
@@ -105,7 +126,7 @@ AFRAME.registerComponent('controller', {
                     this.nonServerFish.splice(index, 1);
                     this.serverFish.push(selFish);
                 };
-                this.updateFishDataBase(selFish, selFishData);
+                this.addFishToDataBase(selFish, selFishData);
             };
             selFish.setAttribute('position', this.worldToLocal(selFish, releaseSpot));
             releaseSpot.appendChild(selFish);
@@ -158,6 +179,7 @@ AFRAME.registerComponent('controller', {
                 });
             };
         };
+        el.addEventListener('feedfish', this.feedFish);
         el.addEventListener('showfish', this.fishSelected);
         el.addEventListener('releasefish', this.fishReleased);
         el.addEventListener('dataloaded', this.gameSetup);
@@ -227,8 +249,10 @@ AFRAME.registerComponent('controller', {
     increaseFishFood: function() {
         this.fishFoodCount++;
         document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
-        console.log(this.serverFish);
-        console.log(this.nonServerFish);
+    },
+    decreaseFishFood: function() {
+        this.fishFoodCount--;
+        document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
     },
     // returns the world position of the passed in object
     getWorldPos: function(el) {
@@ -317,7 +341,7 @@ AFRAME.registerComponent('controller', {
         };
         firebase.database().ref().update(updates);
     },
-    updateFishDataBase: function(fishObj, fishData) {
+    addFishToDataBase: function(fishObj, fishData) {
         var update = {};
         var name;
         if(fishData.servername != null) {
@@ -325,15 +349,7 @@ AFRAME.registerComponent('controller', {
         } else {
             name = 'Fish_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000) + '_' + Math.floor(Math.random() * 1000);
         };
-        
-        for (i in this.fishData) {
-            if(this.fishData[i].fish == fishObj) {
-                this.fishData.splice(i, 1);
-                var combinedFishData = {fish:fishObj, fishServerName:name, fishData:fishObj.components.fish.fishServerData.fishData};
-                this.fishData.push(combinedFishData);
-                break;
-            } 
-        }
+        this.updateFishDataInArray(fishObj, name, fishObj.components.fish.fishServerData.fishData);
         
         console.log(name + " added to server.");
         console.log(fishData);
@@ -345,8 +361,21 @@ AFRAME.registerComponent('controller', {
             TimesFed:fishData.timesfed
         };
         update['FishList/' + name] = name;
-        firebase.database().ref().update(update);
+        //firebase.database().ref().update(update);
     },
+    updateFishDataInArray: function(fishObj, serverName, updatedFishData) {
+        for (i in this.fishData) {
+            if(this.fishData[i].fish == fishObj) {
+                this.fishData.splice(i, 1);
+                var combinedFishData = {fish:fishObj, fishServerName:serverName, fishData:updatedFishData};
+                this.fishData.push(combinedFishData);
+                break;
+            } 
+        };
+    },
+    updateFishDataBase() {
+        var update = {};
+    }
 });
 
 // if Key is number use fish[number], if it is a string use fish.string

@@ -65,22 +65,19 @@ AFRAME.registerComponent('fish', {
         
         this.fishServerData = this.sceneController.getFishData(el);
         this.setupData();
-        this.determineFromServer();
         
         this.mdFN = ()=> {
             if(this.sceneController.selectedFish == null) {
                 el.emit('showfish',{fishSelected:el},true);
             } else if (this.sceneController.selectedFish != null && this.sceneController.selectedFish == el) {
-                // TODO: emit feed fish
+                if(this.sceneController.fishFoodCount > 0) {
+                    el.emit('feedfish',{fishSelected:el},true);
+                }
             }
         };
                 
         el.addEventListener('mousedown', this.mdFN);
         el.setAttribute('class', 'interactable');
-    },
-    determineFromServer() {
-        var el = this.el;
-        var data = this.data;
     },
     setupData: function() {
         var data = this.data;
