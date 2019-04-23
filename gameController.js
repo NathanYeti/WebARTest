@@ -34,6 +34,7 @@ AFRAME.registerComponent('controller', {
             for (i in snap.val()) {
                 this.activeFishNames.push(i);
             };
+            
             if (Object.keys(this.activeFishNames).length >= this.fishMaxAmount) {
                 this.riverFishAmount = this.fishMaxAmount;
             } else {
