@@ -375,6 +375,7 @@ AFRAME.registerComponent('controller', {
     },
     updateFishDataBase() {
         var update = {};
+        // TODO: update database
     }
 });
 
