@@ -112,7 +112,7 @@ AFRAME.registerComponent('controller', {
             selFish.setAttribute('position', this.worldToLocal(selFish, this.camera));
             // reparents the selected fish 'object'
             this.camera.appendChild(selFish);
-            
+            selFish.setAttribute('material', {color:'red'});
             // animates the position of the fish 'object'
             selFish.setAttribute('animation__position', {
                 property: 'position',
