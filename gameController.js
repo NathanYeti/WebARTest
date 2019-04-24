@@ -64,8 +64,8 @@ AFRAME.registerComponent('controller', {
             // update fish data in array of data
             var size = Math.round((selFishData.size + .1) * 1000)/1000;
             var timesFed = selFishData.timesfed + 1;
-            var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.name, Size:size, TimesFed:timesFed};
-            this.updateFishDataInArray(selFish, selFishData.serverName, updatedFishData);
+            var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.servername, Size:size, TimesFed:timesFed};
+            this.updateFishDataInArray(selFish, selFishData.servername, updatedFishData);
             
             // update local fish data
             selFishCom.fishServerData = this.getFishData(selFish);
@@ -74,7 +74,7 @@ AFRAME.registerComponent('controller', {
             document.getElementById('fsize').innerHTML = "Size: " + selFishData.size + 'm';
             document.getElementById('ffed').innerHTML = "Times Fed: " + selFishData.timesfed;
             // update server
-            this.updateFishDataBase();
+            this.updateFishDataBase(selFish, selFishData);
         };
         this.gameSetup = (details)=> {
             this.tankSetup();
@@ -87,6 +87,8 @@ AFRAME.registerComponent('controller', {
             this.selectedFish = selFish;
             selFish.setAttribute('position', this.worldToLocal(selFish, this.camera));
             this.camera.appendChild(selFish);
+            
+            console.log(selFishData);
             
             selFish.setAttribute('animation__position', {
                 property: 'position',
@@ -361,7 +363,7 @@ AFRAME.registerComponent('controller', {
             TimesFed:fishData.timesfed
         };
         update['FishList/' + name] = name;
-        //firebase.database().ref().update(update);
+        firebase.database().ref().update(update);
     },
     updateFishDataInArray: function(fishObj, serverName, updatedFishData) {
         for (i in this.fishData) {
@@ -373,9 +375,19 @@ AFRAME.registerComponent('controller', {
             } 
         };
     },
-    updateFishDataBase() {
+    updateFishDataBase(fishObj, fishData) {
+        console.log(fishData);
+        if(fishData.servername == null) return;
+        console.log('hello');
         var update = {};
         // TODO: update database
+        update['Fish/' + fishData.servername] = {
+            BirthDay:fishData.birthday, 
+            Name:fishData.name, 
+            Size:fishData.size, 
+            TimesFed:fishData.timesfed
+        };
+        firebase.database().ref().update(update);
     }
 });
 
