@@ -380,7 +380,6 @@ AFRAME.registerComponent('controller', {
         var worldPos = new THREE.Vector3();
         child.object3D.getWorldPosition(worldPos);
         parent.object3D.worldToLocal(worldPos);
-        console.log(worldPos);
         return worldPos;
     },
     // called to populate the river and tank at runtime.

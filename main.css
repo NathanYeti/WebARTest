@@ -18,7 +18,7 @@
     display: none;
     flex-direction: column;
     position: absolute;
-    bottom: 1vh;
+    bottom: 0vh;
     width: -webkit-fill-available;
     z-index: 1;
     margin: 0% 10%;
