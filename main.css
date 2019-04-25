@@ -22,7 +22,7 @@
     width: -webkit-fill-available;
     z-index: 1;
     margin: 0% 10%;
-    height: 50vh;
+    height: 40vh;
 }
 
 #fishbuttons {
@@ -37,7 +37,7 @@
     color:white;
     flex-grow: 1;
     margin: 2px;
-    padding: 3vh 3vw;
+    padding: 5vh 3vw;
     font-size: 2vmax;
     border-radius: 5px;
     text-align: center;
