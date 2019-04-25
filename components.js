@@ -59,6 +59,9 @@ AFRAME.registerComponent('fish', {
         var el = this.el;
         var data = this.data;
         
+        this.posAnim = null;
+        this.scaleAnim = null;
+        
         // reference to the scene
         this.scene = el.sceneEl;
         this.sceneController = this.scene.components.controller;
@@ -75,7 +78,18 @@ AFRAME.registerComponent('fish', {
                 }
             }
         };
-                
+        this.aEnd = (details)=> {
+            if (this.posAnim != null && this.posAnim == details.target) {
+                el.removeChild(this.posAnim);
+                this.posAnim = null;
+            }
+            if (this.scaleAnim != null && this.scaleAnim == details.target) {
+                el.removeChild(this.scaleAnim);
+                this.scaleAnim = null;
+            }
+        }; 
+        
+        el.addEventListener('animationend', this.aEnd);
         el.addEventListener('mousedown', this.mdFN);
         el.setAttribute('class', 'interactable');
     },

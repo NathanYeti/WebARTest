@@ -103,6 +103,8 @@ AFRAME.registerComponent('controller', {
         this.fishSelected = (details)=> {
             // reference to the fish 'object' being selected
             var selFish = details.detail.fishSelected;
+            // reference to the fish component of the fish 'object'
+            var selFishCom = selFish.components.fish;
             // reference to the fish component data of the fish 'object'
             var selFishData = selFish.components.fish.data;
             // holds reference to the selected fish 'object'
@@ -113,6 +115,30 @@ AFRAME.registerComponent('controller', {
             // reparents the selected fish 'object'
             this.camera.appendChild(selFish);
             // animates the position of the fish 'object'
+            // create animation
+            var posAnimation = document.createElement('a-animation');
+            // set attirbutes
+            posAnimation.setAttribute('attribute', 'position');
+            posAnimation.setAttribute('from', selFish.getAttribute('position').x + ' ' + selFish.getAttribute('position').y + ' ' +   selFish.getAttribute('position').z);
+            posAnimation.setAttribute('to', this.cameraPoint);
+            posAnimation.setAttribute('dur', 1000);
+            posAnimation.setAttribute('dir', 'normal');
+            // attach to fish
+            selFish.appendChild(posAnimation);
+            selFishCom.posAnim = posAnimation;
+            
+            // create animation
+            var scaleAnimation = document.createElement('a-animation');
+            // set attributes
+            scaleAnimation.setAttribute('attribute', 'scale');
+            scaleAnimation.setAttribute('from', selFishData.rtscale);
+            scaleAnimation.setAttribute('to', selFishData.sscale);
+            scaleAnimation.setAttribute('dur', 1000);
+            scaleAnimation.setAttribute('dir', 'normal');
+            // attach to fish
+            selFish.appendChild(scaleAnimation);
+            selFishCom.scaleAnim = scaleAnimation;
+            /*
             selFish.setAttribute('animation__position', {
                 property: 'position',
                 from: selFish.getAttribute('position').x + ' ' + selFish.getAttribute('position').y + ' ' +   selFish.getAttribute('position').z,
@@ -128,6 +154,7 @@ AFRAME.registerComponent('controller', {
                 dur: 1000,
                 dir: 'normal',
             });
+            */
             // determines date based on the format
             var date = new Date(selFishData.birthday * 1000);
             var dateFormat = {month:'short', day:'numeric', year:'numeric'};
@@ -144,6 +171,8 @@ AFRAME.registerComponent('controller', {
         this.fishReleased = (details)=> {
             // reference to the fish 'object' being released
             var selFish = details.detail.fishSelected;
+            // reference to the fish component of the fish 'object'
+            var selFishCom = selFish.components.fish;
             // reference to the fish component data of the fish 'object'
             var selFishData = selFish.components.fish.data;
             // the release spot position
@@ -163,9 +192,12 @@ AFRAME.registerComponent('controller', {
                 // add fish data to the database
                 this.addFishToDataBase(selFish, selFishData);
             };
+            
+            var fromPos = this.worldToLocal(selFish, releaseSpot);
+            var toPos = this.randomFishLocation(releaseSpot);
             // repositions the fish 'objects' position so that it stays in the same object when reparenting.
             // 'objects' positions are all based off of local position
-            selFish.setAttribute('position', this.worldToLocal(selFish, releaseSpot));
+            selFish.setAttribute('position', fromPos);
             // reparents the released fish 'object'
             releaseSpot.appendChild(selFish);
             
@@ -173,9 +205,32 @@ AFRAME.registerComponent('controller', {
             //fish.removeAttribute('animation__scale');
             
             // determines positions to animate to and from
-            var fromPos = this.worldToLocal(selFish, releaseSpot);
-            var toPos = this.randomFishLocation(releaseSpot);
+            
             // animates the position of the fish 'object'
+            // create animation
+            var posAnimation = document.createElement('a-animation');
+            // set attribute
+            posAnimation.setAttribute('attribute', 'position');
+            posAnimation.setAttribute('from', fromPos.x + ' ' + fromPos.y + ' ' + fromPos.z);
+            posAnimation.setAttribute('to', toPos.x + ' ' + toPos.y + ' ' + toPos.z);
+            posAnimation.setAttribute('dur', 1000);
+            posAnimation.setAttribute('dir', 'normal');
+            // attach to fish
+            selFish.appendChild(posAnimation);
+            selFishCom.posAnim = posAnimation;
+            
+            // create animation
+            var scaleAnimation = document.createElement('a-animation');
+            // set attributes
+            scaleAnimation.setAttribute('attribute', 'scale');
+            scaleAnimation.setAttribute('from', selFishData.sscale);
+            scaleAnimation.setAttribute('to', selFishData.rtscale);
+            scaleAnimation.setAttribute('dur', 1000);
+            scaleAnimation.setAttribute('dir', 'normal');
+            // attach to fish
+            selFish.appendChild(scaleAnimation);
+            selFishCom.scaleAnim = scaleAnimation;
+            /*
             selFish.setAttribute('animation__position', {
                 property: 'position',
                 from: fromPos.x + ' ' + fromPos.y + ' ' + fromPos.z,
@@ -191,6 +246,7 @@ AFRAME.registerComponent('controller', {
                 dur: 1000,
                 dir: 'normal',
             }); 
+            */
             // makes the UI display for the fish data invisible
             document.getElementById('fishdisplay').style.display = 'none';
         };
@@ -323,7 +379,9 @@ AFRAME.registerComponent('controller', {
     worldToLocal: function(child, parent) {
         var worldPos = new THREE.Vector3();
         child.object3D.getWorldPosition(worldPos);
-        return parent.object3D.worldToLocal(worldPos);
+        parent.object3D.worldToLocal(worldPos);
+        console.log(worldPos);
+        return worldPos;
     },
     // called to populate the river and tank at runtime.
     populateRiverTank: function(parentObject, array, fishAmount) {
