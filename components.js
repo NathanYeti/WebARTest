@@ -51,6 +51,7 @@ AFRAME.registerComponent('fish', {
         name: {type: 'string'},
         servername: {type: 'string'},
         size: {type: 'int'},
+        maxsize: {type: 'float', default:2.2},
         timesfed: {type: 'int'},
         rtscale: {type: 'string', default:'1 1 1'},
         sscale: {type: 'string', default:'.1 .1 .1'},
@@ -68,6 +69,7 @@ AFRAME.registerComponent('fish', {
         
         this.fishServerData = this.sceneController.getFishData(el);
         this.setupData();
+        this.sceneController.determineFishSize(el);
         
         this.mdFN = ()=> {
             if(this.sceneController.selectedFish == null) {

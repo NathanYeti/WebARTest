@@ -14,7 +14,7 @@ AFRAME.registerComponent('controller', {
             // 'false' spawns the game objects as childs of the image tracking objects.
         this.isEditorTesting = true;
         // reference to the 'a-scene'
-        // in this case, el and el.sceneEl refer to the same object, however, if the 'controller' component is attached  ot another object later on, the game objects will still be created.
+        // in this case, el and el.sceneEl refer to the same object, however, if the 'controller' component is attached to another object later on, the game objects will still be created.
         this.scene = el.sceneEl;
         // reference to the camera 'object'
         this.camera = document.getElementById('camera');
@@ -30,6 +30,8 @@ AFRAME.registerComponent('controller', {
         this.fishFoodCount = 0;
         // holds reference to all the tracker 'objects' if 'isEditorTesting = false'
         this.trackers = [];
+        this.rtScaleSizes = ['.8 .8 .8', '1 1 1', '1.2 1.2 1.2', '1.4 1.4 1.4'];
+        this.sScaleSizes = ['.06 .06 .06', '.08 .08 .08', '.1 .1 .1', '.12 .12 .12'];
         // holds the list of fish names from the server
         // this is used to select which fish 'data' will be used for each fish 'object' spawned in the river
         this.activeFishNames = [];
@@ -80,18 +82,30 @@ AFRAME.registerComponent('controller', {
             // decrease fish food amount
             this.decreaseFishFood();
             // update fish data in array of data
-            var size = Math.round((selFishData.size + .1) * 1000)/1000;
+            var size;
+            if(selFishData.size < selFishData.maxsize) {
+                size = Math.round((selFishData.size + .1) * 1000)/1000;
+            } else {
+                size = selFishData.maxsize;
+            };
+            
             var timesFed = selFishData.timesfed + 1;
             var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.servername, Size:size, TimesFed:timesFed};
             this.updateFishDataInArray(selFish, selFishData.servername, updatedFishData);
             // update local fish data
             selFishCom.fishServerData = this.getFishData(selFish);
             selFishCom.setupData();
+            
             // update UI fish data being showed
             document.getElementById('fsize').innerHTML = "Size: " + selFishData.size + 'm';
             document.getElementById('ffed').innerHTML = "Times Fed: " + selFishData.timesfed;
             // update server
             this.updateFishDataBase(selFish, selFishData);
+            
+            //update fish data with size
+            this.determineFishSize(selFish);
+            //update fish size
+            selFish.setAttribute('scale', this.updateFishSize(selFish, updatedFishData));
         };
         // called for setting up the game 'objects'
         this.gameSetup = (details)=> {
@@ -357,6 +371,7 @@ AFRAME.registerComponent('controller', {
                 this.fishData.push(combinedFishData);
                 break;
         }
+        return combinedFishData;
     },
     // called to increase the amount of fish food the user has
     increaseFishFood: function() {
@@ -391,7 +406,8 @@ AFRAME.registerComponent('controller', {
             fish.setAttribute('fish', '');
             parentObject.appendChild(fish);
             array.push(fish);
-            this.registerFish(fish, parentObject);
+            var combinedFishData = this.registerFish(fish, parentObject);
+            fish.setAttribute('scale', this.determineInitialFishSize(fish, combinedFishData.fishData));
         }
     },
     // retrieves data for the given fish
@@ -411,9 +427,11 @@ AFRAME.registerComponent('controller', {
         var width = parentObject.getAttribute('geometry').width;
         var depth = parentObject.getAttribute('geometry').depth;
         var height = parentObject.getAttribute('geometry').height;
-        var widthPos = (Math.random() * (width - .2)) - (width/2);
-        var depthPos = (Math.random() * (depth - .2)) - (depth/2);
-        var heightPos = (Math.random() * (height - .2)) - (height/2);
+        // min must equal to or less than half width,height,depth otherwise it will cause offset
+        var min = .2;
+        var widthPos = ((Math.random() * ((width - min) - min)) + min) - (width/2);
+        var depthPos = ((Math.random() * ((depth - min) - min)) + min) - (depth/2);
+        var heightPos = ((Math.random() * ((height - min) - min)) + min) - (height/2);
     
         var position = new THREE.Vector3(widthPos, heightPos, depthPos);
         return position;
@@ -442,6 +460,81 @@ AFRAME.registerComponent('controller', {
             };
         };
         return name.join(' ');
+    },
+    // determines proper fish size for animations
+    // used in init of fish to keep proper scaling when animating
+    determineFishSize: function(fishObj) {
+        // reference to the fish component of the fish 'object'
+        var fishCom = fishObj.components.fish;
+        // reference to the fish component data of the fish 'object'
+        var fishData = fishObj.components.fish.data;
+        var sizePercentage = fishData.size/fishData.maxsize;
+        switch(true) {
+            case (.25 >= sizePercentage):
+                fishData.rtscale = this.rtScaleSizes[0];
+                fishData.sscale = this.sScaleSizes[0];
+                break;
+            case (.25 < sizePercentage && sizePercentage <= .5):
+                fishData.rtscale = this.rtScaleSizes[1];
+                fishData.sscale = this.sScaleSizes[1];
+                break;
+            case (.5 < sizePercentage && sizePercentage <= .75):
+                fishData.rtscale = this.rtScaleSizes[2];
+                fishData.sscale = this.sScaleSizes[2];
+                break;
+            case (.75 < sizePercentage):
+                fishData.rtscale = this.rtScaleSizes[3];
+                fishData.sscale = this.sScaleSizes[3];
+                break;
+        }
+    },
+    // determines fish's initial size when spawned
+    // returns proper size
+    determineInitialFishSize: function(fishObj, fishData) {
+        var sizePercentage = fishData.Size/2.2;
+        var decidedSize;
+        switch(true) {
+            case (.25 >= sizePercentage):
+                decidedSize = this.rtScaleSizes[0];
+                break;
+            case (.25 < sizePercentage && sizePercentage <= .5):
+                decidedSize = this.rtScaleSizes[1];
+                break;
+            case (.5 < sizePercentage && sizePercentage <= .75):
+                decidedSize = this.rtScaleSizes[2];
+                break;
+            case (.75 < sizePercentage):
+                decidedSize = this.rtScaleSizes[3];
+                break;
+            default:
+                decidedSize = this.rtScaleSizes[0];
+                break;
+        };
+        return decidedSize;
+    },
+    // updates fish size when feeding a fish
+    // returns proper size
+    updateFishSize: function(fishObj, fishData) {
+        var sizePercentage = fishData.Size/2.2;
+        var decidedSize;
+        switch(true) {
+            case (.25 >= sizePercentage):
+                decidedSize = this.sScaleSizes[0];
+                break;
+            case (.25 < sizePercentage && sizePercentage <= .5):
+                decidedSize = this.sScaleSizes[1];
+                break;
+            case (.5 < sizePercentage && sizePercentage <= .75):
+                decidedSize = this.sScaleSizes[2];
+                break;
+            case (.75 < sizePercentage):
+                decidedSize = this.sScaleSizes[3];
+                break;
+            default:
+                decidedSize = this.sScaleSizes[0];
+                break;
+        };
+        return decidedSize;
     },
     // called to populate the database with X amount of fish
     populateDataBase: function() {
@@ -496,9 +589,7 @@ AFRAME.registerComponent('controller', {
     },
     // called to update a fish's 'data' in the database
     updateFishDataBase(fishObj, fishData) {
-        console.log(fishData);
         if(fishData.servername == null) return;
-        console.log('hello');
         var update = {};
         // TODO: update database
         update['Fish/' + fishData.servername] = {
