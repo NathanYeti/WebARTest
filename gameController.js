@@ -376,13 +376,12 @@ AFRAME.registerComponent('controller', {
     // called to increase the amount of fish food the user has
     increaseFishFood: function() {
         this.fishFoodCount++;
-        document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
-        console.log(this.fishNameList);
+        document.getElementById("ff").innerHTML = this.fishFoodCount;
     },
     // called to decrease the amount of fish food the user has
     decreaseFishFood: function() {
         this.fishFoodCount--;
-        document.getElementById("ff").innerHTML = "FF: " + this.fishFoodCount;
+        document.getElementById("ff").innerHTML = this.fishFoodCount;
     },
     // returns the world position of the passed in object
     getWorldPos: function(el) {
