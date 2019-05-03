@@ -323,6 +323,9 @@ AFRAME.registerComponent('controller', {
         } else {
             tracker.appendChild(this.tank);
         }
+        var text = document.createElement('a-distext');
+        text.setAttribute('text', {value:'Tank'});
+        this.tank.appendChild(text);
     },
     // sets up the river 'object' for use
     riverSetup: function() {
@@ -338,6 +341,10 @@ AFRAME.registerComponent('controller', {
         } else {
             tracker.appendChild(this.river);
         }
+        var text = document.createElement('a-distext');
+        text.setAttribute('text', {value:'River'});
+        text.setAttribute('rotation', {y:90});
+        this.river.appendChild(text);
     },
     // sets up the food 'object' for use
     foodSetup: function() {
@@ -353,6 +360,10 @@ AFRAME.registerComponent('controller', {
         } else {
             tracker.appendChild(this.food);
         }
+        var text = document.createElement('a-distext');
+        text.setAttribute('text', {value:'Fish Food'});
+        text.setAttribute('rotation', {y:-90});
+        this.food.appendChild(text);
     },
     // called to register a fish in the 'fishData' array so that it can retrieve its 'data' when it gets reparented
     registerFish: function(fishObj, parentObject) {

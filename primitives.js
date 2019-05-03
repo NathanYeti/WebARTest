@@ -37,3 +37,25 @@ AFRAME.registerPrimitive('a-fish', {
     mappings: {
     },
 });
+
+AFRAME.registerPrimitive('a-distext', {
+    defaultComponents: {
+        text: { 
+            value: 'Hello World 2.0',
+            side: 'double',
+            anchor: 'center',
+            baseline: 'bottom',
+            align: 'center',
+            color: 'red',
+            width: 5,
+        },
+        position: {x:0, y:.5, z:0},
+    },
+
+    mappings: {
+        t: 'text.value',
+        x: 'position.x',
+        y: 'position.y',
+        z: 'position.z',
+    },
+});
