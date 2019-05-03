@@ -37,8 +37,8 @@
 }
 
 #fishbuttons {
+    display: none;
     width: -webkit-fill-available;
-    display: flex;
     flex-direction: row;
 }
 
@@ -47,25 +47,41 @@
     background-color: white;
     color: #0b7b94;
     flex-grow: 1;
-    margin: 2px;
-    padding: 3vh 3vw;
+    margin: 1vh 1vw;
+    padding: 2vh 3vw;
     font-size: 2vmax;
-    border-radius: 5px;
     text-align: center;
     box-shadow: .7vh .7vh 15px -3px black;
+}
+
+#buttondis {
+    position: absolute;
+    bottom: 0vh;
+    width: -webkit-fill-available;
+    z-index: 1;
+    margin: 0% 10%;
 }
 
 #fishinfopanel {
     background-color: #3bbddc;
     box-shadow: .7vh .7vh 15px -3px black;
-    height: 75%;
-    border-radius: 5px;
 }
 
 #fishinfo {
     background-color: white;
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    justify-content: space-around;
+    align-content: center;
+    padding: 3vh 0vw;
+}
+
+.ih {
+    text-align: center;
+}
+
+.infoicon {
+    width: 5vmax;
 }
 
 #fname {
@@ -76,8 +92,14 @@
 }
 
 .fishdata {
-    color:#0b7b94;
-    font-size: 3vmax;
-    margin: 1.5vh 10vw;
-    width: -webkit-fill-available;
+    margin: 0vh 0vw;
+    color: #0b7b94;
+    font-size: 3.5vmax;
+}
+
+.fishdataname {
+    color: #3bbddc;
+    font-size: 2vmax;
+    margin: 0vh 0vw;
+    font-weight: normal
 }

@@ -90,15 +90,15 @@ AFRAME.registerComponent('controller', {
             };
             
             var timesFed = selFishData.timesfed + 1;
-            var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.servername, Size:size, TimesFed:timesFed};
+            var updatedFishData = {BirthDay:selFishData.birthday, Name:selFishData.name, Size:size, TimesFed:timesFed};
             this.updateFishDataInArray(selFish, selFishData.servername, updatedFishData);
             // update local fish data
             selFishCom.fishServerData = this.getFishData(selFish);
             selFishCom.setupData();
             
             // update UI fish data being showed
-            document.getElementById('fsize').innerHTML = "Size: " + selFishData.size + 'm';
-            document.getElementById('ffed').innerHTML = "Times Fed: " + selFishData.timesfed;
+            document.getElementById('fsize').innerHTML = selFishData.size + 'm';
+            document.getElementById('ffed').innerHTML = selFishData.timesfed;
             // update server
             this.updateFishDataBase(selFish, selFishData);
             
@@ -171,15 +171,16 @@ AFRAME.registerComponent('controller', {
             */
             // determines date based on the format
             var date = new Date(selFishData.birthday * 1000);
-            var dateFormat = {month:'short', day:'numeric', year:'numeric'};
+            var dateFormat = {month:'numeric', day:'numeric', year:'2-digit'};
             var formatedDate = new Intl.DateTimeFormat('en-US', dateFormat).format(date);
             // makes the UI display for the fish data visible
             // then, applies the fish data for the selected fish
             document.getElementById('fishdisplay').style.display = 'flex';
+            document.getElementById('fishbuttons').style.display = 'flex';
             document.getElementById('fname').innerHTML = selFishData.name;
-            document.getElementById('fbirth').innerHTML = "Birth Day: " + formatedDate;
-            document.getElementById('fsize').innerHTML = "Size: " + selFishData.size + 'm';
-            document.getElementById('ffed').innerHTML = "Times Fed: " + selFishData.timesfed;
+            document.getElementById('fbirth').innerHTML = formatedDate;
+            document.getElementById('fsize').innerHTML = selFishData.size + 'm';
+            document.getElementById('ffed').innerHTML = selFishData.timesfed;
         };
         // called when a fish is released
         this.fishReleased = (details)=> {
@@ -263,6 +264,7 @@ AFRAME.registerComponent('controller', {
             */
             // makes the UI display for the fish data invisible
             document.getElementById('fishdisplay').style.display = 'none';
+            document.getElementById('fishbuttons').style.display = 'none';
         };
         // called to finish the fish data after the name list has been retrieved from the server.
         this.finishRiverFishData = (details)=> {
@@ -377,6 +379,7 @@ AFRAME.registerComponent('controller', {
     increaseFishFood: function() {
         this.fishFoodCount++;
         document.getElementById("ff").innerHTML = this.fishFoodCount;
+        console.log(fishNameList);
     },
     // called to decrease the amount of fish food the user has
     decreaseFishFood: function() {

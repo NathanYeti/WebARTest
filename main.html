@@ -32,11 +32,26 @@
             <div id='fishinfopanel'>
                 <h3 id='fname'>Name</h3>
                 <div id='fishinfo'>
-                    <h3 id='fbirth' class="fishdata">Birth Day:</h3>
-                    <h3 id='fsize' class="fishdata">Size:</h3>
-                    <h3 id='ffed' class="fishdata">Times Fed:</h3>
+                    <div class="ih">
+                        <img class="infoicon" src="./TestImages/calendar_icon.png">
+                        <h2 id='fbirth' class="fishdata">0</h2>
+                        <h3 class="fishdataname">Birth</h3>
+                    </div>
+                    <div class="ih">
+                        <img class="infoicon" src="./TestImages/size_icon.png">
+                        <h2 id='fsize' class="fishdata">0</h2>
+                        <h3 class="fishdataname">Length</h3>
+                    </div>
+                    <div class="ih">
+                        <img class="infoicon" src="./TestImages/food_icon.png">
+                        <h2 id='ffed' class="fishdata">0</h2>
+                        <h3 class="fishdataname">Feedings</h3>
+                    </div>
                 </div>
             </div>
+        </div>
+        
+        <div id="buttondis">
             <div id='fishbuttons'>
                 <!--
                 <input class='button' type='button' onclick="riverRelease()" value="Release River">
@@ -46,7 +61,6 @@
                 <div class="button" onclick="tankRelease()">Release Tank</div>
             </div>
         </div>
-        
         <!-- use raycaster="objects: object" to specify which objects to check for in raycasting with cursor -->
         <a-scene controller ar='worldSensing: true' cursor='rayOrigin: mouse' raycaster='objects: .interactable'>
             <a-camera id="camera">
@@ -61,6 +75,12 @@
                      src="./TestImages/Sturgeon_Sign_2_Resize.png">
                 <img crossorigin="anonymous"
                      src="./TestImages/food_icon_1.png">
+                <img crossorigin="anonymous"
+                     src="./TestImages/calendar_icon.png">
+                <img crossorigin="anonymous"
+                     src="./TestImages/food_icon.png">
+                <img crossorigin="anonymous"
+                     src="./TestImages/size_icon.png">
             </a-assets>
         </a-scene>
         
