@@ -12,7 +12,7 @@ AFRAME.registerComponent('controller', {
         // 'true' for testing in the editor, 'false' for phone testing.
             // 'true' spawns the game objects in a half circle around the user.
             // 'false' spawns the game objects as childs of the image tracking objects.
-        this.isEditorTesting = false;
+        this.isEditorTesting = true;
         // reference to the 'a-scene'
         // in this case, el and el.sceneEl refer to the same object, however, if the 'controller' component is attached to another object later on, the game objects will still be created.
         this.scene = el.sceneEl;
@@ -312,7 +312,7 @@ AFRAME.registerComponent('controller', {
     // sets up the tank 'object' for use
     tankSetup: function() {
         var tracker = document.createElement('a-entity');
-        tracker.setAttribute('imagetracking', {name:'tank', src:'./TestImages/Sturgeon_Sign_2_Resize.png', physicalWidth:0.2286/*1.016*/});
+        tracker.setAttribute('imagetracking', {name:'tank', src:'./TestImages/Sturgeon_Sign_2_Resize.png', physicalWidth:1.016});
         this.scene.appendChild(tracker);
         this.trackers.push(tracker);
         this.tank = document.createElement('a-tank');
@@ -330,7 +330,7 @@ AFRAME.registerComponent('controller', {
     // sets up the river 'object' for use
     riverSetup: function() {
         var tracker = document.createElement('a-entity');
-        tracker.setAttribute('imagetracking', {name:'river', src:'./TestImages/OverLook_1_Resize.png', physicalWidth:0.2286/*0.9144*/});
+        tracker.setAttribute('imagetracking', {name:'river', src:'./TestImages/OverLook_1_Resize.png', physicalWidth:0.9144});
         this.scene.appendChild(tracker);
         this.trackers.push(tracker);
         this.river = document.createElement('a-river');
@@ -349,7 +349,7 @@ AFRAME.registerComponent('controller', {
     // sets up the food 'object' for use
     foodSetup: function() {
         var tracker = document.createElement('a-entity');
-        tracker.setAttribute('imagetracking', {name:'food', src:'./TestImages/Painting_2_Fish_Food.png', physicalWidth:0.2286/*1.6891*/});
+        tracker.setAttribute('imagetracking', {name:'food', src:'./TestImages/Painting_2_Fish_Food.png', physicalWidth:1.6891});
         this.scene.appendChild(tracker);
         this.trackers.push(tracker);
         this.food = document.createElement('a-food');
