@@ -12,7 +12,7 @@ AFRAME.registerComponent('controller', {
         // 'true' for testing in the editor, 'false' for phone testing.
             // 'true' spawns the game objects in a half circle around the user.
             // 'false' spawns the game objects as childs of the image tracking objects.
-        this.isEditorTesting = false;
+        this.isEditorTesting = true;
         // reference to the 'a-scene'
         // in this case, el and el.sceneEl refer to the same object, however, if the 'controller' component is attached to another object later on, the game objects will still be created.
         this.scene = el.sceneEl;
